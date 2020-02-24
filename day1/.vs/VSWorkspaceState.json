@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\bin\\Debug\\netcoreapp3.1",
+    "\\bin\\Release\\netcoreapp3.1",
+    "\\obj\\Release",
+    "\\obj\\Release\\netcoreapp3.1"
+  ],
+  "SelectedNode": "\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}
