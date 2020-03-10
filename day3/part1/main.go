@@ -16,8 +16,6 @@ type Point struct {
 const intersection = math.MinInt32
 
 func (p  *Point) manhattanDistance(point Point) int {
-	fmt.Println(point)
-
 	return abs(p.x - point.x) + abs(p.y - point.y)
 }
 
@@ -30,26 +28,28 @@ func abs(value int) int {
 }
 
 func main() {
-	file, err := ioutil.ReadFile("input.txt")
+	file, err := ioutil.ReadFile("../input.txt")
 
 	if err != nil {
 		panic(err)
 	}
 
 	grid := map[Point]int{}
-	centralPort := Point{x: 0, y: 0}
+	centralPoint := Point{x: 0, y: 0}
 	minDistance := math.MaxInt32
 
-	line1 := strings.Split(strings.Split(string(file), "\n")[0], ",")
+	line1 := strings.Split(strings.Trim(strings.Split(string(file), "\n")[0], "\r"), ",")
+	line2 := strings.Split(strings.Trim(strings.Split(string(file), "\n")[1], "\r"), ",")
 
-	line2 := strings.Split(strings.Split(string(file), "\n")[1], ",")
+	wire1 := createWire(line1)
+	wire2 := createWire(line2)
 
-	grid = addWire(line1, 1, grid)
-	grid = addWire(line2, 2, grid)
+	grid = addWire(wire1, 1, grid)
+	grid = addWire(wire2, 2, grid)
 
 	for point := range grid	{
-		if point != centralPort && grid[point] == intersection {
-			distance := centralPort.manhattanDistance(point)
+		if point != centralPoint && grid[point] == intersection {
+			distance := centralPoint.manhattanDistance(point)
 
 			if distance < minDistance {
 				minDistance = distance
@@ -57,51 +57,65 @@ func main() {
 		}
 	}
 
-	fmt.Println(minDistance)
+	 fmt.Println(minDistance)
 }
 
-func addWire(wire []string, wireId int, grid map[Point]int) map[Point]int {
+func createWire(points []string) []Point {
 	currentX := 0
 	currentY := 0
 
-	for _, path := range wire {
+	var wire []Point
+
+	for _, path := range points {
 		direction := path[0:1]
-		length, _ := strconv.Atoi(path[1:])
+		length, err := strconv.Atoi(path[1:])
+
+		if err != nil {
+			panic(err)
+		}
 
 		if direction == "L" {
 			i := 0
-			for ; i <= length; i++ {
-				grid = updatePoint(grid, Point{x: currentX - i, y: currentY}, wireId)
+			for ; i < length; i++ {
+				wire = append(wire, Point{x: currentX - i, y: currentY})
 			}
 			currentX = currentX - length
 		}
 
 		if direction == "R" {
 			i := 0
-			for ; i <= length; i++ {
-				grid = updatePoint(grid, Point{x: currentX + i, y: currentY}, wireId)
+			for ; i < length; i++ {
+				wire = append(wire, Point{x: currentX + i, y: currentY})
 			}
 			currentX = currentX	+ length
 		}
 
 		if direction == "U" {
 			i := 0
-			for ; i <= length; i++ {
-				grid = updatePoint(grid, Point{x: currentX, y: currentY	- i}, wireId)
+			for ; i < length; i++ {
+				wire = append(wire, Point{x: currentX, y: currentY	- i})
 			}
 			currentY = currentY - length
 		}
 
 		if direction == "D" {
 			i := 0
-			for ; i <= length; i++ {
-				grid = updatePoint(grid, Point{x: currentX, y: currentY + i}, wireId)
+			for ; i < length; i++ {
+				wire = append(wire, Point{x: currentX, y: currentY + i})
 			}
 			currentY =  currentY + length
 		}
- 	}
+	}
 
- 	return grid
+	return wire
+}
+
+func addWire(wire []Point, wireId int, grid map[Point]int) map[Point]int {
+	for _, value := range wire {
+		grid = updatePoint(grid, value, wireId)
+	}
+
+	return grid
 }
 
 func updatePoint(grid map[Point]int, point Point, wireId int) map[Point]int {

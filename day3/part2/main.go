@@ -98,7 +98,7 @@ func createWire(points []string) []Point {
 		if direction == "U" {
 			i := 0
 			for ; i < length; i++ {
-				wire = append(wire, Point{x: currentX, y: currentY	- i})
+				wire = append(wire, Point{x: currentX, y: currentY - i})
 			}
 			currentY = currentY - length
 		}
