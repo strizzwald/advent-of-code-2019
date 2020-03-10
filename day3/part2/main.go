@@ -15,10 +15,6 @@ type Point struct {
 
 const intersection = math.MinInt32
 
-func (p  *Point) manhattanDistance(point Point) int {
-	return abs(p.x - point.x) + abs(p.y - point.y)
-}
-
 func abs(value int) int {
 	if value < 0 {
 		return -value
@@ -28,7 +24,7 @@ func abs(value int) int {
 }
 
 func main() {
-	file, err := ioutil.ReadFile("input.txt")
+	file, err := ioutil.ReadFile("../input.txt")
 
 	if err != nil {
 		panic(err)
@@ -38,9 +34,8 @@ func main() {
 	centralPoint := Point{x: 0, y: 0}
 	minDistance := math.MaxInt32
 
-	line1 := strings.Split(strings.Split(string(file), "\n")[0], ",")
-
-	line2 := strings.Split(strings.Split(string(file), "\n")[1], ",")
+	line1 := strings.Split(strings.Trim(strings.Split(string(file), "\n")[0], "\r"), ",")
+	line2 := strings.Split(strings.Trim(strings.Split(string(file), "\n")[1], "\r"), ",")
 
 	wire1 := createWire(line1)
 	wire2 := createWire(line2)
@@ -52,18 +47,13 @@ func main() {
 		if point != centralPoint && grid[point] == intersection {
 			wireDistance := steps(wire1, point) + steps(wire2, point)
 
-			fmt.Printf("Intersection point: %d\n", point)
-			fmt.Printf("Wire 1 distance: %d\n", steps(wire1, point))
-			fmt.Printf("Wire 2 distance: %d\n", steps(wire2, point))
-			fmt.Println()
-
 			if wireDistance < minDistance {
 				minDistance = wireDistance
 			}
 		}
 	}
 
- 	//fmt.Println(minDistance)
+	fmt.Println(minDistance)
 
 }
 
@@ -83,12 +73,15 @@ func createWire(points []string) []Point {
 
 	for _, path := range points {
 		direction := path[0:1]
-		length, _ := strconv.Atoi(path[1:])
+		length, err := strconv.Atoi(path[1:])
+
+		if err != nil {
+			panic(err)
+		}
 
 		if direction == "L" {
 			i := 0
-
-			for ; i <= length; i++ {
+			for ; i < length; i++ {
 				wire = append(wire, Point{x: currentX - i, y: currentY})
 			}
 			currentX = currentX - length
@@ -96,7 +89,7 @@ func createWire(points []string) []Point {
 
 		if direction == "R" {
 			i := 0
-			for ; i <= length; i++ {
+			for ; i < length; i++ {
 				wire = append(wire, Point{x: currentX + i, y: currentY})
 			}
 			currentX = currentX	+ length
@@ -104,7 +97,7 @@ func createWire(points []string) []Point {
 
 		if direction == "U" {
 			i := 0
-			for ; i <= length; i++ {
+			for ; i < length; i++ {
 				wire = append(wire, Point{x: currentX, y: currentY	- i})
 			}
 			currentY = currentY - length
@@ -112,7 +105,7 @@ func createWire(points []string) []Point {
 
 		if direction == "D" {
 			i := 0
-			for ; i <= length; i++ {
+			for ; i < length; i++ {
 				wire = append(wire, Point{x: currentX, y: currentY + i})
 			}
 			currentY =  currentY + length
