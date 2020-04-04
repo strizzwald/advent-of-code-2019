@@ -8,28 +8,7 @@ func main() {
 	potentialPasswordCount := 0
 
 	for i := start; i < end; i++ {
-		hasDuplicateDigits := false
-		digitsIncrease := true
-		digits := i
-
-		for j := 10; j <= 100_000; {
-			x := digits % 100
-
-			if !hasDuplicateDigits {
-				hasDuplicateDigits = checkDuplicate(x)
-			}
-
-			digitsIncrease = checkDigitOrder(x)
-
-			if !digitsIncrease {
-				break
-			}
-
-			digits = i / j
-			j *= 10
-		}
-
-		if hasDuplicateDigits && digitsIncrease {
+		if digitsIncrease(i) && hasDuplicateDigits(i) {
 			potentialPasswordCount++
 		}
 	}
@@ -37,17 +16,40 @@ func main() {
 	fmt.Println(potentialPasswordCount)
 }
 
-func checkDuplicate(num int) bool {
-	leftDigit := num / 10
-	rightDigit := num % 10
 
-	return leftDigit == rightDigit
+func digitsIncrease(num int) bool {
+	digits := num
+
+	for digits > 0 {
+		doubleDigits := digits % 100
+		left := doubleDigits / 10
+		right := doubleDigits % 10
+
+		if left > right {
+			return false
+		}
+
+		digits /= 10
+	}
+
+	return true
 }
 
-func checkDigitOrder(num int) bool {
-	leftDigit := num / 10
-	rightDigit := num % 10
+func hasDuplicateDigits(num int) bool {
+	digits := num
 
-	return leftDigit <= rightDigit
+	for digits > 0 {
+		doubleDigits := digits % 100
+		left := doubleDigits / 10
+		right := doubleDigits % 10
+
+		if left == right {
+			return true
+		}
+
+		digits /= 10
+	}
+
+	return false
 
 }
