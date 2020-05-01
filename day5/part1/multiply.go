@@ -23,7 +23,7 @@ func (m *multiply) Execute(memory []int) {
 
 	lhMode := instructionMode(multiplyInstruction).GetLeftOperandMode()
 	rhMode := instructionMode(multiplyInstruction).GetRightOperandMode()
-	assMode := instructionMode(multiplyInstruction).GetAssignmentOperand()
+	assignmentMode := instructionMode(multiplyInstruction).GetAssignmentOperand()
 
 	lh := 0
 
@@ -41,7 +41,7 @@ func (m *multiply) Execute(memory []int) {
 		rh = memory[memory[m.pointer + 2]]
 	}
 
-	if assMode == positionMode {
+	if assignmentMode == positionMode {
 		memory[memory[m.pointer + 3]] = lh * rh
 	} else {
 		panic(multiplyInstruction)

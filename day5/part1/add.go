@@ -23,7 +23,7 @@ func (a *add) Execute(memory []int) {
 
 	lhMode := instructionMode(addInstruction).GetLeftOperandMode()
 	rhMode := instructionMode(addInstruction).GetRightOperandMode()
-	assMode := instructionMode(addInstruction).GetAssignmentOperand()
+	assignmentMode := instructionMode(addInstruction).GetAssignmentOperand()
 
 	lh := 0
 
@@ -45,7 +45,7 @@ func (a *add) Execute(memory []int) {
 		panic(rh)
 	}
 
-	if assMode == positionMode {
+	if assignmentMode == positionMode {
 		memory[memory[a.pointer + 3]] = lh + rh
 	} else {
 		panic(addInstruction)

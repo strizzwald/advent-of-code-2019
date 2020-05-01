@@ -51,7 +51,7 @@ func newInstruction(pointer int, memory []int) instruction {
 	case exitOpCode:
 		return &exit{pointer: pointer}
 	default:
-		panic(fmt.Sprintf("Unknown instruction: %d", pointer))
+		panic(fmt.Sprintf("Unknown instruction:\npointer: %d\ninstruction: %d\nprogram: %v, ", pointer, memory[pointer], memory))
 	}
 }
 
