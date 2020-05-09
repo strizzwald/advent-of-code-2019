@@ -45,10 +45,10 @@ func main() {
 func getDistance(orbitMap OrbitMap, start string, end string) int {
 	var distance int
 
-    path := bfs(orbitMap, start, end)
+	path := bfs(orbitMap, start, end)
 
-    for obj := path[end]; obj != ""; obj = path[obj] {
-    	distance++
+	for obj := path[end]; obj != ""; obj = path[obj] {
+		distance++
 	}
 
 	return distance
