@@ -20,7 +20,7 @@ func loadProgram() []int {
 		panic(err)
 	}
 
-	inputTxt := strings.Split(string(input), ",")
+	inputTxt := strings.Split(strings.Trim(string(input), "\n"), ",")
 
 	memory := make([]int, len(inputTxt))
 
@@ -62,78 +62,81 @@ func newInstruction(pointer int, memory []int) instruction {
 	}
 }
 
-func getPhaseSettings() [][]int {
-	allowedPhases := []int{0, 1, 2, 3, 4}
-	var phaseSettings [][]int
+func getPhaseSettingConfigurations() [][]int {
+    defaultPhases := []int{0, 1, 2, 3, 4}
+    var configs [][]int
 
-	for a := range allowedPhases {
-		for b := range allowedPhases {
-			for c := range allowedPhases {
-				for d := range allowedPhases {
-					for e := range allowedPhases {
-						if a != b && a != c && a != d && a != e && b != c && b != d && b != e && c != d && c != e && d != e {
-							phaseSettings = append(phaseSettings, []int{a, b, c, d, e})
-						}
-					}
-				}
-			}
-		}
-	}
+    for _, a := range defaultPhases {
+        for _, b := range defaultPhases {
+            for _, c := range defaultPhases {
+                for _, d := range defaultPhases {
+                    for _, e := range defaultPhases {
+                        if a != b && a != c && a != d && a != e && b != c && b != d && b != e && c != d && c != e && d != e {
+                            configs = append(configs, []int{a, b, c, d, e})
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	return phaseSettings
+    return configs
 }
 
 func executeProgram (memory[] int) {
-	maxOutput := math.MinInt32
-	var maxPhaseSetting []int
-	var currentAmplifier int
-	var amplifierOutput int
-	var phaseSettingAdded bool
+    var ampOutput int
+    maxOutput := math.MinInt32
+    var programCopy []int
 
-	phaseSettings := getPhaseSettings()
+    for _, config := range getPhaseSettingConfigurations() {
+        programCopy = make([]int, len(memory))
+        copy(programCopy, memory)
 
-	pointer := 0
-	exited := false
+        for _, setting := range config {
+            ampOutput = runAmplifier(programCopy, setting, ampOutput)
+        }
 
-	for _, setting := range phaseSettings {
-		for !exited {
-			ins := newInstruction(pointer, memory)
+        if ampOutput > maxOutput {
+            maxOutput = ampOutput
+        }
 
-			storeIns, ok := ins.(*store)
+        ampOutput = 0 // reset for next phase
+    }
 
-			// Add phase setting
-			if ok && !phaseSettingAdded {
-				storeIns.SetInput(setting[currentAmplifier])
-				phaseSettingAdded = true
-			} else if ok && phaseSettingAdded {
-				// Add previous amplifier's output
-				storeIns.SetInput(amplifierOutput)
-			}
+    fmt.Println(maxOutput)
+}
 
-			ins.Execute(memory)
+func runAmplifier(program []int, phaseSetting int, input int) int {
+    var exited bool
+    var phaseSettingAdded bool
+    var pointer int
+    var amplifierOutput int
 
-			output, ok := ins.(*output)
+    for !exited {
+        ins := newInstruction(pointer, program)
 
-			if ok {
-				// TODO: Use a public method for *value*
-				amplifierOutput = output.value
-				currentAmplifier++
-				phaseSettingAdded = false
-			}
+        storeIns, ok := ins.(*store)
 
-			pointer += ins.Offset()
-			exited = ins.OpCode() == exitOpCode
-		}
+        // Add phase setting
+        if ok && !phaseSettingAdded {
+            storeIns.SetInput(phaseSetting)
+            phaseSettingAdded = true
+        } else if ok && phaseSettingAdded {
+            storeIns.SetInput(input)
+        }
 
-		if maxOutput < amplifierOutput {
-			maxOutput = amplifierOutput
-			maxPhaseSetting = setting
-		}
+        ins.Execute(program)
 
-		currentAmplifier = 0
-		exited = false
-	}
+        output, ok := ins.(*output)
 
-	fmt.Println(maxOutput)
-	fmt.Printf("Max phase setting: %v", maxPhaseSetting)
+        if ok {
+            // TODO: Use a public method for *value*
+            amplifierOutput = output.value
+        }
+
+        pointer += ins.Offset()
+        exited = ins.OpCode() == exitOpCode
+    }
+
+    return amplifierOutput
 }
