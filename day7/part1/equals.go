@@ -4,7 +4,7 @@ const equalsOpCode = 8
 
 type equals struct {
 	pointer int
-	offset int
+	offset  int
 }
 
 func (e *equals) OpCode() int {
@@ -26,9 +26,9 @@ func (e *equals) Execute(memory []int) {
 	var lh int
 
 	if lhMode == immediateMode {
-		lh = memory[e.Pointer() + 1]
+		lh = memory[e.Pointer()+1]
 	} else if lhMode == positionMode {
-		lh = memory[memory[e.Pointer() + 1]]
+		lh = memory[memory[e.Pointer()+1]]
 	} else {
 		panic(equalsInstruction)
 	}
@@ -37,9 +37,9 @@ func (e *equals) Execute(memory []int) {
 	var rh int
 
 	if rhMode == immediateMode {
-		rh = memory[e.Pointer() + 2]
+		rh = memory[e.Pointer()+2]
 	} else if rhMode == positionMode {
-		rh = memory[memory[e.Pointer() + 2]]
+		rh = memory[memory[e.Pointer()+2]]
 	} else {
 		panic(equalsInstruction)
 	}
@@ -55,7 +55,7 @@ func (e *equals) Execute(memory []int) {
 	assignmentMode := instructionMode(equalsInstruction).GetAssignmentOperandMode()
 
 	if assignmentMode == positionMode {
-		memory[memory[e.Pointer() + 3]] = value
+		memory[memory[e.Pointer()+3]] = value
 	} else {
 		panic(equalsInstruction)
 	}

@@ -5,7 +5,7 @@ const defaultJumpIfTrueOffset = 3
 
 type jumpIfTrue struct {
 	pointer int
-	offset int
+	offset  int
 }
 
 func (j *jumpIfTrue) OpCode() int {
@@ -32,9 +32,9 @@ func (j *jumpIfTrue) Execute(memory []int) {
 	lh := 0
 
 	if lhMode == immediateMode {
-		lh = memory[j.Pointer() + 1]
+		lh = memory[j.Pointer()+1]
 	} else if lhMode == positionMode {
-		lh = memory[memory[j.Pointer() + 1]]
+		lh = memory[memory[j.Pointer()+1]]
 	} else {
 		panic(jumpInstruction)
 	}
@@ -45,9 +45,9 @@ func (j *jumpIfTrue) Execute(memory []int) {
 		rh := 0
 
 		if rhMode == immediateMode {
-			rh = memory[j.Pointer() + 2]
+			rh = memory[j.Pointer()+2]
 		} else if rhMode == positionMode {
-			rh = memory[memory[j.Pointer() + 2]]
+			rh = memory[memory[j.Pointer()+2]]
 		} else {
 			panic(jumpInstruction)
 		}

@@ -40,7 +40,7 @@ func newInstruction(pointer int, memory []int) instruction {
 
 	switch opCode {
 	case storeOpCode:
-		return &store{pointer:pointer}
+		return &store{pointer: pointer}
 	case outputOpCode:
 		return &output{pointer: pointer}
 	case addOpCode:
@@ -63,80 +63,80 @@ func newInstruction(pointer int, memory []int) instruction {
 }
 
 func getPhaseSettingConfigurations() [][]int {
-    defaultPhases := []int{0, 1, 2, 3, 4}
-    var configs [][]int
+	defaultPhases := []int{0, 1, 2, 3, 4}
+	var configs [][]int
 
-    for _, a := range defaultPhases {
-        for _, b := range defaultPhases {
-            for _, c := range defaultPhases {
-                for _, d := range defaultPhases {
-                    for _, e := range defaultPhases {
-                        if a != b && a != c && a != d && a != e && b != c && b != d && b != e && c != d && c != e && d != e {
-                            configs = append(configs, []int{a, b, c, d, e})
-                        }
-                    }
-                }
-            }
-        }
-    }
+	for _, a := range defaultPhases {
+		for _, b := range defaultPhases {
+			for _, c := range defaultPhases {
+				for _, d := range defaultPhases {
+					for _, e := range defaultPhases {
+						if a != b && a != c && a != d && a != e && b != c && b != d && b != e && c != d && c != e && d != e {
+							configs = append(configs, []int{a, b, c, d, e})
+						}
+					}
+				}
+			}
+		}
+	}
 
-    return configs
+	return configs
 }
 
-func executeProgram (memory[] int) {
-    var ampOutput int
-    maxOutput := math.MinInt32
-    var programCopy []int
+func executeProgram(memory []int) {
+	var ampOutput int
+	maxOutput := math.MinInt32
+	var programCopy []int
 
-    for _, config := range getPhaseSettingConfigurations() {
-        programCopy = make([]int, len(memory))
-        copy(programCopy, memory)
+	for _, config := range getPhaseSettingConfigurations() {
+		programCopy = make([]int, len(memory))
+		copy(programCopy, memory)
 
-        for _, setting := range config {
-            ampOutput = runAmplifier(programCopy, setting, ampOutput)
-        }
+		for _, setting := range config {
+			ampOutput = runAmplifier(programCopy, setting, ampOutput)
+		}
 
-        if ampOutput > maxOutput {
-            maxOutput = ampOutput
-        }
+		if ampOutput > maxOutput {
+			maxOutput = ampOutput
+		}
 
-        ampOutput = 0 // reset for next phase
-    }
+		ampOutput = 0 // reset for next phase configuration
+	}
 
-    fmt.Println(maxOutput)
+	fmt.Println(maxOutput)
 }
 
 func runAmplifier(program []int, phaseSetting int, input int) int {
-    var exited bool
-    var phaseSettingAdded bool
-    var pointer int
-    var amplifierOutput int
+	var exited bool
+	var phaseSettingAdded bool
+	var pointer int
+	var amplifierOutput int
 
-    for !exited {
-        ins := newInstruction(pointer, program)
+	for !exited {
+		ins := newInstruction(pointer, program)
 
-        storeIns, ok := ins.(*store)
+		storeIns, ok := ins.(*store)
 
-        // Add phase setting
-        if ok && !phaseSettingAdded {
-            storeIns.SetInput(phaseSetting)
-            phaseSettingAdded = true
-        } else if ok && phaseSettingAdded {
-            storeIns.SetInput(input)
-        }
+		// Add phase setting
+		if ok && !phaseSettingAdded {
+			storeIns.SetInput(phaseSetting)
+			phaseSettingAdded = true
+		} else if ok && phaseSettingAdded {
+			storeIns.SetInput(input)
+		}
 
-        ins.Execute(program)
+		ins.Execute(program)
 
-        output, ok := ins.(*output)
+		output, ok := ins.(*output)
 
-        if ok {
-            // TODO: Use a public method for *value*
-            amplifierOutput = output.value
-        }
+		if ok {
+			// TODO: Use a public method for *value*
+			amplifierOutput = output.value
+		}
 
-        pointer += ins.Offset()
-        exited = ins.OpCode() == exitOpCode
-    }
+		pointer += ins.Offset()
+		exited = ins.OpCode() == exitOpCode
+	}
 
-    return amplifierOutput
+	return amplifierOutput
 }

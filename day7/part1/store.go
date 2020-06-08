@@ -4,7 +4,7 @@ const storeOpCode = 3
 
 type store struct {
 	pointer int
-	input int
+	input   int
 }
 
 func (s *store) OpCode() int {
@@ -27,7 +27,7 @@ func (s *store) Execute(memory []int) {
 	storeInstruction := memory[s.pointer]
 
 	if instructionMode(storeInstruction).GetAssignmentOperandMode() == positionMode {
-		memory[memory[s.pointer + 1]] = s.input
+		memory[memory[s.pointer+1]] = s.input
 	} else {
 		panic(storeInstruction)
 	}

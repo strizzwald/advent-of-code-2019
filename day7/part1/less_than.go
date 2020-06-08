@@ -4,7 +4,7 @@ const lessThanOpCode = 7
 
 type lessThan struct {
 	pointer int
-	offset int
+	offset  int
 }
 
 func (l *lessThan) OpCode() int {
@@ -26,9 +26,9 @@ func (l *lessThan) Execute(memory []int) {
 	var lh int
 
 	if lhMode == immediateMode {
-		lh = memory[l.Pointer() + 1]
+		lh = memory[l.Pointer()+1]
 	} else if lhMode == positionMode {
-		lh = memory[memory[l.Pointer() + 1]]
+		lh = memory[memory[l.Pointer()+1]]
 	} else {
 		panic(lessThanInstruction)
 	}
@@ -37,9 +37,9 @@ func (l *lessThan) Execute(memory []int) {
 	var rh int
 
 	if rhMode == immediateMode {
-		rh = memory[l.Pointer() + 2]
+		rh = memory[l.Pointer()+2]
 	} else if rhMode == positionMode {
-		rh = memory[memory[l.Pointer() + 2]]
+		rh = memory[memory[l.Pointer()+2]]
 	}
 
 	var value int
@@ -53,7 +53,7 @@ func (l *lessThan) Execute(memory []int) {
 	assignmentMode := instructionMode(lessThanInstruction).GetAssignmentOperandMode()
 
 	if assignmentMode == positionMode {
-		memory[memory[l.Pointer() + 3]] = value
+		memory[memory[l.Pointer()+3]] = value
 	} else {
 		panic(lessThanInstruction)
 	}

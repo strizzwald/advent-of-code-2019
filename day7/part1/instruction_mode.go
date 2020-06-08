@@ -11,9 +11,8 @@ func (i instructionMode) GetLeftOperandMode() int {
 	// remove instruction
 	temp = temp / 100
 
-	return int(temp  % 10)
+	return int(temp % 10)
 }
-
 
 func (i instructionMode) GetRightOperandMode() int {
 	temp := i

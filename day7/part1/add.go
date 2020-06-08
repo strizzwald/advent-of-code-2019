@@ -28,9 +28,9 @@ func (a *add) Execute(memory []int) {
 	lh := 0
 
 	if lhMode == immediateMode {
-		lh = memory[a.pointer + 1]
+		lh = memory[a.pointer+1]
 	} else if lhMode == positionMode {
-		lh = memory[memory[a.pointer + 1]]
+		lh = memory[memory[a.pointer+1]]
 	} else {
 		panic(lh)
 	}
@@ -38,15 +38,15 @@ func (a *add) Execute(memory []int) {
 	rh := 0
 
 	if rhMode == immediateMode {
-		rh = memory[a.pointer + 2]
+		rh = memory[a.pointer+2]
 	} else if rhMode == positionMode {
-		rh = memory[memory[a.pointer + 2]]
+		rh = memory[memory[a.pointer+2]]
 	} else {
 		panic(rh)
 	}
 
 	if assMode == positionMode {
-		memory[memory[a.pointer + 3]] = lh + rh
+		memory[memory[a.pointer+3]] = lh + rh
 	} else {
 		panic(addInstruction)
 	}
