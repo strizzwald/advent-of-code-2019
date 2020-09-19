@@ -23,18 +23,11 @@ func (s *store) SetInput(input int) {
 	s.input = input
 }
 
-func (s *store) Input() int {
-	return s.input
-}
-
-func (s *store) Execute(memory []int, relativeOffset int) {
+func (s *store) Execute(memory []int) {
 	storeInstruction := memory[s.pointer]
 
 	if instructionMode(storeInstruction).GetAssignmentOperandMode() == positionMode {
-		memory[memory[s.Pointer() + 1]] = s.Input()
-	} else if (instructionMode(storeInstruction).GetAssignmentOperandMode() == relativeMode) {
-		memory[relativeOffset + memory[s.Pointer() + 1]] = s.Input()
-		
+		memory[memory[s.pointer+1]] = s.input
 	} else {
 		panic(storeInstruction)
 	}
