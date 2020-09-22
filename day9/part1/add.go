@@ -3,18 +3,18 @@ package main
 const addOpCode = 1
 
 type add struct {
-	pointer int
+	pointer int64
 }
 
 func (a *add) OpCode() int {
 	return addOpCode
 }
 
-func (a *add) Pointer() int {
+func (a *add) Pointer() int64 {
 	return a.pointer
 }
 
-func (a *add) Offset() int {
+func (a *add) Offset() int64 {
 	return 4
 }
 
@@ -27,47 +27,47 @@ func (a *add) Execute(memory []int64, relativeOffset int64) {
 
 	var lh int64
 
-	switch (lhMode) {
+	switch lhMode {
 
-        case immediateMode:
-            {
-                lh = memory[a.Pointer() + 1]
-            }
-        case positionMode:
-            {
-                lh = memory[memory[a.Pointer()+1]]
-            }
-        case relativeMode:
-            {
-                lh = memory[relativeOffset + memory[a.Pointer() +1 ]]
-            }
-        default:
-            panic(lh)
+	case immediateMode:
+		{
+			lh = memory[a.Pointer()+1]
+		}
+	case positionMode:
+		{
+			lh = memory[memory[a.Pointer()+1]]
+		}
+	case relativeMode:
+		{
+			lh = memory[relativeOffset+memory[a.Pointer()+1]]
+		}
+	default:
+		panic(lh)
 	}
 
 	var rh int64
 
-	switch (rhMode) {
-        case immediateMode:
-            {
-                rh = memory[a.Pointer()+1]
-            }
-        case positionMode:
-            {
-                rh = memory[memory[a.Pointer()+1]]
-            }
-        case relativeMode:
-            {
-                rh = memory[relativeOffset+memory[a.Pointer()+1]]
-            }
-        default:
-            panic(rh)
+	switch rhMode {
+	case immediateMode:
+		{
+			rh = memory[a.Pointer()+2]
+		}
+	case positionMode:
+		{
+			rh = memory[memory[a.Pointer()+2]]
+		}
+	case relativeMode:
+		{
+			rh = memory[relativeOffset+memory[a.Pointer()+2]]
+		}
+	default:
+		panic(rh)
 	}
 
 	if assMode == positionMode {
-		memory[memory[a.Pointer() + 3]] = lh + rh
+		memory[memory[a.Pointer()+3]] = lh + rh
 	} else if assMode == relativeMode {
-		memory[relativeOffset+memory[a.Pointer() + 3]] = lh + rh
+		memory[relativeOffset+memory[a.Pointer()+3]] = lh + rh
 	} else {
 		panic(addInstruction)
 	}

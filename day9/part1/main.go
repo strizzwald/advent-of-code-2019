@@ -34,7 +34,7 @@ func loadProgram() []int64 {
 	return memory
 }
 
-func newInstruction(pointer int, memory []int64) instruction {
+func newInstruction(pointer int64, memory []int64) instruction {
 	opCode := memory[pointer] % 100
 
 	switch opCode {
@@ -56,17 +56,19 @@ func newInstruction(pointer int, memory []int64) instruction {
 		return &equals{pointer: pointer}
 	case exitOpCode:
 		return &exit{pointer: pointer}
+	case relativeBaseOffsetOpCode:
+		return &relativeBaseOffset{pointer: pointer}
 	default:
 		panic(fmt.Sprintf("Unknown instruction: %d", memory[pointer]))
 	}
 }
 
 func executeProgram(program []int64) {
-	program := append(program, make([]int64, length(program)*2))
+	program = append(program, make([]int64, len(program))...)
 
-	var offsetValue int
-	var pointer int
-	var exited boolean
+	var offsetValue int64
+	var pointer int64
+	var exited bool
 
 	for !exited {
 		ins := newInstruction(pointer, program)
@@ -75,9 +77,14 @@ func executeProgram(program []int64) {
 
 		if ok {
 			storeIns.SetInput(1)
+
+			/*
+			 * part2
+			 * storeIns.SetInput(2)
+			 */
 		}
 
-		ins.Execute(memory, offsetValue)
+		ins.Execute(program, offsetValue)
 
 		outputIns, ok := ins.(*output)
 
@@ -85,14 +92,14 @@ func executeProgram(program []int64) {
 			fmt.Printf("Output: %d \n", outputIns.value)
 		}
 
-		relativeBaseOffsetIns, ok := (*relativeBaseOffset)
+		relativeBaseOffsetIns, ok := ins.(*relativeBaseOffset)
 
 		if ok {
 			offsetValue = relativeBaseOffsetIns.Value()
 		}
 
 		pointer += ins.Offset()
-		exited == ins.OpCode() == exitOpCode
+		exited = ins.OpCode() == exitOpCode
 	}
 
 }

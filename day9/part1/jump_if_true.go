@@ -4,34 +4,34 @@ const jumpIfTrueOpCode = 5
 const defaultJumpIfTrueOffset = 3
 
 type jumpIfTrue struct {
-	pointer int
-	offset  int
+	pointer int64
+	offset  int64
 }
 
 func (j *jumpIfTrue) OpCode() int {
 	return jumpIfTrueOpCode
 }
 
-func (j *jumpIfTrue) Pointer() int {
+func (j *jumpIfTrue) Pointer() int64 {
 	return j.pointer
 }
 
-func (j *jumpIfTrue) Offset() int {
+func (j *jumpIfTrue) Offset() int64 {
 	return j.offset
 }
 
-func (j *jumpIfTrue) setOffset(offset int) {
+func (j *jumpIfTrue) setOffset(offset int64) {
 	j.offset = offset
 }
 
-func (j *jumpIfTrue) Execute(memory []int, relativeOffset int) {
+func (j *jumpIfTrue) Execute(memory []int64, relativeOffset int64) {
 	jumpInstruction := memory[j.Pointer()]
 
 	lhMode := instructionMode(jumpInstruction).GetLeftOperandMode()
 
-	lh := 0
+	var lh int64
 
-	switch (lhMode); {
+	switch lhMode {
 	case immediateMode:
 		{
 			lh = memory[j.Pointer()+1]
@@ -51,9 +51,9 @@ func (j *jumpIfTrue) Execute(memory []int, relativeOffset int) {
 	if lh != 0 {
 
 		rhMode := instructionMode(jumpInstruction).GetRightOperandMode()
-		rh := 0
+		var rh int64
 
-		switch (rhMode); {
+		switch rhMode {
 		case immediateMode:
 			{
 				rh = memory[j.Pointer()+2]
@@ -70,7 +70,7 @@ func (j *jumpIfTrue) Execute(memory []int, relativeOffset int) {
 			panic(jumpInstruction)
 		}
 
-		j.setOffset(rh - j.Pointer())
+		j.setOffset(rh - int64(j.Pointer()))
 	} else {
 		j.setOffset(defaultJumpIfTrueOffset)
 	}

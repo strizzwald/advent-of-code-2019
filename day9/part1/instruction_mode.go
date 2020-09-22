@@ -14,16 +14,16 @@ func (i instructionMode) GetLeftOperandMode() instructionMode {
 	// remove instruction
 	temp = temp / 100
 
-	return int(temp % 10)
+	return instructionMode(temp % 10)
 }
 
 func (i instructionMode) GetRightOperandMode() instructionMode {
-	temp := i
+	temp := int64(i)
 
 	// remove instruction + lh operand
 	temp = temp / 1000
 
-	return int(temp % 10)
+	return instructionMode(temp % 10)
 }
 
 func (i instructionMode) GetAssignmentOperandMode() instructionMode {
@@ -32,5 +32,5 @@ func (i instructionMode) GetAssignmentOperandMode() instructionMode {
 	// remove instruction + lh operand + rh operand
 	temp = temp / 10_000
 
-	return int(temp % 10)
+	return instructionMode(temp % 10)
 }

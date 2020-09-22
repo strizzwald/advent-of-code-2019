@@ -3,31 +3,31 @@ package main
 const multiplyOpCode = 2
 
 type multiply struct {
-	pointer int
+	pointer int64
 }
 
 func (m *multiply) OpCode() int {
 	return multiplyOpCode
 }
 
-func (m *multiply) Pointer() int {
+func (m *multiply) Pointer() int64 {
 	return m.pointer
 }
 
-func (m *multiply) Offset() int {
+func (m *multiply) Offset() int64 {
 	return 4
 }
 
-func (m *multiply) Execute(memory []int, relativeOffset int) {
-	multiplyInstruction := memory[m.Pointer()+1]
+func (m *multiply) Execute(memory []int64, relativeOffset int64) {
+	multiplyInstruction := memory[m.Pointer()]
 
 	lhMode := instructionMode(multiplyInstruction).GetLeftOperandMode()
 	rhMode := instructionMode(multiplyInstruction).GetRightOperandMode()
 	assMode := instructionMode(multiplyInstruction).GetAssignmentOperandMode()
 
-	lh := 0
+	var lh int64
 
-	switch (lhMode); {
+	switch lhMode {
 	case immediateMode:
 		{
 			lh = memory[m.Pointer()+1]
@@ -38,15 +38,15 @@ func (m *multiply) Execute(memory []int, relativeOffset int) {
 		}
 	case relativeMode:
 		{
-			lh = memory[relativeOffset+m.Pointer()+1]
+			lh = memory[relativeOffset+memory[m.Pointer()+1]]
 		}
 	default:
 		panic(multiplyInstruction)
 	}
 
-	rh := 0
+	var rh int64
 
-	switch (rhMode); {
+	switch rhMode {
 	case immediateMode:
 		{
 			rh = memory[m.Pointer()+2]

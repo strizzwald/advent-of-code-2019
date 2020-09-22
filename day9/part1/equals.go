@@ -3,29 +3,29 @@ package main
 const equalsOpCode = 8
 
 type equals struct {
-	pointer int
-	offset  int
+	pointer int64
+	offset  int64
 }
 
 func (e *equals) OpCode() int {
 	return equalsOpCode
 }
 
-func (e *equals) Pointer() int {
+func (e *equals) Pointer() int64 {
 	return e.pointer
 }
 
-func (e *equals) Offset() int {
+func (e *equals) Offset() int64 {
 	return 4
 }
 
-func (e *equals) Execute(memory []int, relativeOffset int) {
+func (e *equals) Execute(memory []int64, relativeOffset int64) {
 	equalsInstruction := memory[e.Pointer()]
 
 	lhMode := instructionMode(equalsInstruction).GetLeftOperandMode()
-	var lh int
+	var lh int64
 
-	switch (lhMode); {
+	switch lhMode {
 	case immediateMode:
 		{
 			lh = memory[e.Pointer()+1]
@@ -43,9 +43,9 @@ func (e *equals) Execute(memory []int, relativeOffset int) {
 	}
 
 	rhMode := instructionMode(equalsInstruction).GetRightOperandMode()
-	var rh int
+	var rh int64
 
-	switch (rhMode); {
+	switch rhMode {
 	case immediateMode:
 		{
 			rh = memory[e.Pointer()+2]
@@ -62,7 +62,7 @@ func (e *equals) Execute(memory []int, relativeOffset int) {
 		panic(equalsInstruction)
 	}
 
-	var value int
+	var value int64
 
 	if lh == rh {
 		value = 1

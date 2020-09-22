@@ -3,41 +3,41 @@ package main
 const relativeBaseOffsetOpCode = 9
 
 type relativeBaseOffset struct {
-	pointer int
-	value   int
+	pointer int64
+	value   int64
 }
 
 func (r *relativeBaseOffset) OpCode() int {
 	return relativeBaseOffsetOpCode
 }
 
-func (r *relativeBaseOffset) Pointer() int {
-	r.pointer
+func (r *relativeBaseOffset) Pointer() int64 {
+	return r.pointer
 }
 
-func (r *relativeBaseOffset) Offset() int {
+func (r *relativeBaseOffset) Offset() int64 {
 	return 2
 }
 
-func (r *relativeBaseOffset) Value() int {
-	r.value
+func (r *relativeBaseOffset) Value() int64 {
+	return r.value
 }
 
-func (r *relativeBaseOffset) Execute(memory []int, relativeOffset int) {
+func (r *relativeBaseOffset) Execute(memory []int64, relativeOffset int64) {
 	offsetInstruction := memory[r.Pointer()]
 
-	switch (instructionMode(offsetInstruction).GetLeftOperandMode()); {
+	switch instructionMode(offsetInstruction).GetLeftOperandMode() {
 	case immediateMode:
 		{
-			r.output = relativeOffset + memory[r.Pointer()+1]
+			r.value = relativeOffset + memory[r.Pointer()+1]
 		}
 	case positionMode:
 		{
-			r.output = relativeOffset + memory[memory[r.Pointer()+1]]
+			r.value = relativeOffset + memory[memory[r.Pointer()+1]]
 		}
 	case relativeMode:
 		{
-			r.output = relativeOffset + memory[relativeOffset+memory[r.Pointer()+1]]
+			r.value = relativeOffset + memory[relativeOffset+memory[r.Pointer()+1]]
 		}
 	default:
 		panic(offsetInstruction)
